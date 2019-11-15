@@ -39,11 +39,11 @@ más de 10 llamadas concurrentes.
 
 # RESOLUCIÓN PRINCIPAL
 
-La solución  es utilizar Threads, para la clase empleado (Employee) , para el despachador (Dispatcher), que es el encargado de asignar las llamadas a medida que estan disponibles los empleados y para la clase productora de llamadas.
+La solución  es utilizar Threads, para la clase empleado (Employee), para el despachador (Dispatcher), que es el encargado de asignar las llamadas a medida que estan disponibles los empleados, y para la clase productora de llamadas.
 
 Para manejar las llamadas, se colocan en una cola concurrente y esperan hasta que algún empleado esté disponible.
 
-El uso de ExecutorService permite manejar la concurrencia (se solicita poer manejar 10 llamadas al mismo tiempo)
+El uso de ExecutorService permite manejar la concurrencia (se solicita poder manejar 10 llamadas al mismo tiempo)
 
 # RESOLUCIÓN EXTRAS/PLUS
 
