@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import dispatcher.CallProducer;
 import dispatcher.Dispatcher;
 import model.Employee;
 
@@ -26,6 +27,13 @@ public class CallCenter {
 		staff.add(Employee.createEmployeeOperator("Peter Parker"));
 		staff.add(Employee.createEmployeeOperator("Bart Simpsons"));
 		staff.add(Employee.createEmployeeOperator("Whalter white"));
+		
+		Dispatcher dispatcher = new Dispatcher(staff);
+	    dispatcher.init();
+	    dispatcher.run();
+	    
+	    CallProducer iniciadorDeLlamadas = new CallProducer();
+	    iniciadorDeLlamadas.run();
 		
         
 
