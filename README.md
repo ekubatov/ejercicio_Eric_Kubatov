@@ -39,11 +39,13 @@ más de 10 llamadas concurrentes.
 
 # RESOLUCIÓN PRINCIPAL
 
-La solución  es utilizar Threads, para la clase empleado (Employee), para el despachador (Dispatcher), que es el encargado de asignar las llamadas a medida que estan disponibles los empleados, y para la clase productora de llamadas.
+En este ejercicio al haber tareas que pueden ejecutarse de manera simultánea, la solución fue utilizar Threads. Tanto en la clase empleado (Employee), como en el despachador (Dispatcher), que es el encargado de asignar las llamadas a medida que estan disponibles los empleados, y en la clase productora de llamadas, se implementó la interface Runnable y se sobre-escribe  el método  "run()". Este método codifica la funcionalidad que se ejecuta en un hilo, es decir lo que se va a ejecutar de forma secuencial en un hilo.
 
 Para manejar las llamadas, se colocan en una cola concurrente y esperan hasta que algún empleado esté disponible.
 
-El uso de ExecutorService permite manejar la concurrencia (se solicita poder manejar 10 llamadas al mismo tiempo)
+Con la clase Executors, con en el que en el método "newFixedThreadPool()" le estamos diciendo que fije como número de threads a ejecutar (empleados); es decir, que nos llevará la gestión de los procesos a ejecutar en los threads del programa. Lo de "ThreadPool" es porque este Framework Executors parte del concepto de que gestiona una piscina (pool) de threads.
+
+Una vez declarado el "executor",  lanzamos los procesos (es decir las llamadas se ponen en cola) para procesarlos. 
 
 # RESOLUCIÓN EXTRAS/PLUS
 
