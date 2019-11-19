@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
-
 import enumerator.EnumEmployeePosition;
 import enumerator.EnumEmployeeState;
 
@@ -51,6 +50,7 @@ public class Employee implements Runnable{
 			if (this.getState() == EnumEmployeeState.BUSY) {
 				try {
 					TimeUnit.SECONDS.sleep(this.call.getDurationInSeconds());
+					System.out.println("Llamada de "+this.call.getDurationInSeconds()+ " segundos atendida por "+this.fullName );
 				} catch (InterruptedException ie) {
 					ie.printStackTrace();
 				} finally {
@@ -89,6 +89,10 @@ public class Employee implements Runnable{
 
 	public synchronized void setState(EnumEmployeeState state) {
 		this.state = state;
+	}
+
+	public List<InboundCall> getListAsweredCalls() {
+		return listAsweredCalls;
 	}
 	
 	

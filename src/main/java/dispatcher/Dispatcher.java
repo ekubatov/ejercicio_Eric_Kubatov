@@ -23,33 +23,37 @@ import model.InboundCall;
  */
 public class Dispatcher implements Runnable{
 	
-	private static int MAXIMUM_CONCURRENT_CALLS = 10;
+	private Boolean run;
 	private ExecutorService executor;
 	private ConcurrentLinkedDeque<Employee> employees;
-	private static ConcurrentLinkedDeque<InboundCall> listInboundCalls = new ConcurrentLinkedDeque<InboundCall>();
+	private CallProducer callProducer;
+	private static ConcurrentLinkedDeque<InboundCall> listInboundCalls = new ConcurrentLinkedDeque<>();
 
 
-	
-	public Dispatcher(List<Employee> employees) {
-		this.executor = new ThreadPoolExecutor(MAXIMUM_CONCURRENT_CALLS, MAXIMUM_CONCURRENT_CALLS, 0L, TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<Runnable>());
+
+	public Dispatcher(List<Employee> employees, CallProducer producer) {
 		this.employees = new ConcurrentLinkedDeque<Employee>(employees);
-		//this.CallProducer = new CallProducer();
-		//this.executor = Executors.newFixedThreadPool(employees.size() + 1);
+		this.callProducer = producer;
+		// fijo  número de threads a ejecutar, es decir, que nos llevará la gestión de los procesos a ejecutar en los threads del programa.
+		this.executor = Executors.newFixedThreadPool(employees.size() + 1);
 	}
 	
 	public static ConcurrentLinkedDeque<InboundCall> getListInboundCalls() {
 		return listInboundCalls;
 	}
 
-	public static void addCalls(InboundCall call) {
+	public static synchronized void addCalls(InboundCall call) {
 		listInboundCalls.add(call);
+	}
+	
+	public synchronized Boolean getRun() {
+		return run;
 	}
 
 	
 	@Override
 	public void run() {
-		while (true) {
+		while (getRun()) {
 			if (listInboundCalls.isEmpty()) {
 				continue;
 			} else {
@@ -66,13 +70,16 @@ public class Dispatcher implements Runnable{
 			}
 		}
 	}
-
-	public void init() {
-		for (Employee employee : this.employees) {
-			this.executor.execute(employee);
-		}
-	}
 	
+	/**
+	 * stop all threads
+	 * 
+	 */
+
+	public synchronized void stop() {
+		this.run = false;
+		this.executor.shutdown();
+	}
 
 	/**
 	 * Finds next available employee
@@ -83,17 +90,20 @@ public class Dispatcher implements Runnable{
 		Comparator<Employee> byPriotity = (Employee e1, Employee e2) -> Integer
 				.compare(e2.getPosition().getPriorityAttention(), e1.getPosition().getPriorityAttention());
 
-
 		Optional<Employee> employee = employeeList.stream().filter(e -> e.getState() == EnumEmployeeState.AVAILABLE)
 				.sorted(byPriotity).findFirst();
-
-
-		return employee.get();
+		
+		return (employee.isPresent()) ? employee.get():  null;
+	
 	}
 
-	public void start() {
-		// TODO Auto-generated method stub
-		
+	public synchronized void start() {
+		this.run = true;
+		this.executor.execute(this.callProducer);
+
+		for (Employee employee : this.employees) {
+			this.executor.execute(employee);
+		}
 	}
 
 }

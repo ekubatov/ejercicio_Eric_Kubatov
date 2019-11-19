@@ -7,7 +7,7 @@ package enumerator;
  */
 public enum EnumEmployeePosition {
 
-	OPERATOR(1), SUPERVISOR(2), DIRECTOR(3);
+	OPERATOR(3), SUPERVISOR(2), DIRECTOR(1);
 	
 	private int priorityAttention;
 	
